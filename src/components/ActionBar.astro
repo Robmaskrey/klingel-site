@@ -1,0 +1,23 @@
+---
+// Phone-only bar pinned to the bottom of the screen with the two key actions.
+// Appears once the hero buttons scroll away; hides again in the Get Involved
+// section, where the real form and donate panel are already on screen.
+---
+<div class="action-bar" id="actionBar">
+  <a href="#involved" class="btn btn-navy">Volunteer</a>
+  <a href="#donate" class="btn btn-donate">Donate</a>
+</div>
+
+<script>
+  const bar = document.getElementById('actionBar')!;
+  const heroCtas = document.querySelector('.hero .ctas');
+  const involved = document.getElementById('involved');
+  const seen = new Map<Element, boolean>();
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) seen.set(e.target, e.isIntersecting);
+    const show = !(heroCtas && seen.get(heroCtas)) && !(involved && seen.get(involved));
+    bar.classList.toggle('show', show);
+  });
+  if (heroCtas) io.observe(heroCtas);
+  if (involved) io.observe(involved);
+</script>

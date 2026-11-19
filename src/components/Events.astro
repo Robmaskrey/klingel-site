@@ -1,0 +1,25 @@
+---
+import { events } from '../data/site';
+---
+<section id="events" class="events">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">On the Trail</div>
+      <h2>Upcoming Events</h2>
+    </div>
+    {events.length > 0
+      ? events.map((ev) => (
+          <div class="event" data-reveal>
+            <div class="date"><span class="m">{ev.month}</span><span class="d">{ev.day}</span></div>
+            <div><h3>{ev.title}</h3><p>{ev.details}</p></div>
+            <a href={ev.rsvpUrl ?? '#involved'} class="btn btn-navy">RSVP</a>
+          </div>
+        ))
+      : (
+          <div class="soon" data-reveal>
+            <h3>Events coming soon</h3>
+            <p>Derek will be out across Stroud Township in the months ahead. Check back soon, or <a href="#involved">sign up to volunteer</a> and we'll let you know when and where to find him.</p>
+          </div>
+        )}
+  </div>
+</section>

@@ -1,0 +1,56 @@
+---
+import { site, hero } from '../data/site';
+import Draft from './Draft.astro';
+import Ridges from './Ridges.astro';
+import Topo from './Topo.astro';
+import { withBase } from '../lib/url';
+---
+<section class="hero">
+  <Topo />
+  <Ridges />
+  <div class="wrap hero-grid">
+    <div data-reveal>
+      <div class="election-badge">
+        🗳️ {site.election.label}:
+        <b>{site.election.confirmed ? site.election.date : <Draft>{site.election.date}</Draft>}</b>
+      </div>
+      <div class="eyebrow">{hero.eyebrow}</div>
+      <h1>
+        {hero.headline}
+        <span class="sr-only">{hero.headlineAccent}</span>
+        <span class="rotator" aria-hidden="true">
+          {hero.places.map((p, i) => <em class={i === 0 ? 'rot-word is-active' : 'rot-word'}>for {p}.</em>)}
+        </span>
+      </h1>
+      <p class="lede">{hero.lede}</p>
+      <div class="ctas">
+        <a href="#involved" class="btn btn-donate">Volunteer</a>
+        <a href="#donate" class="btn btn-light">Chip In</a>
+      </div>
+    </div>
+    <div class="portrait" data-reveal style="--d: 150ms">
+      {site.photo
+        ? <img src={withBase(site.photo)} alt={site.candidate} />
+        : <div><strong>Photo of Derek</strong><br />Add a portrait here<br />(4:5 ratio works best)</div>}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Cycle the gold headline line through Stroud Township's neighborhoods.
+  // All lines share one grid cell, so the headline never changes height.
+  const words = [...document.querySelectorAll<HTMLElement>('.rot-word')];
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (words.length > 1 && !reduce) {
+    let i = 0;
+    setInterval(() => {
+      if (document.hidden) return;
+      const prev = words[i];
+      i = (i + 1) % words.length;
+      prev.classList.remove('is-active');
+      prev.classList.add('is-leaving');
+      words[i].classList.add('is-active');
+      setTimeout(() => prev.classList.remove('is-leaving'), 600);
+    }, 2400);
+  }
+</script>

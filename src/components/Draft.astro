@@ -1,0 +1,5 @@
+---
+// Wraps text that still needs real info. Highlighted while showDrafts is true.
+import { showDrafts } from '../data/site';
+---
+{showDrafts ? <span class="ph"><slot /></span> : <slot />}

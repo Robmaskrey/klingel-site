@@ -1,0 +1,22 @@
+---
+import { priorities } from '../data/site';
+import Icon from './Icon.astro';
+---
+<section id="priorities" class="priorities">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">{priorities.eyebrow}</div>
+      <h2>{priorities.heading}</h2>
+      <p>{priorities.intro}</p>
+    </div>
+    <div class="cards">
+      {priorities.items.map((item, i) => (
+        <div class="card" data-reveal style={`--d: ${i * 110}ms`}>
+          <div class="icon"><Icon name={item.icon} /></div>
+          <h3>{item.title}</h3>
+          <p>{item.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

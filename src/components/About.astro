@@ -1,0 +1,25 @@
+---
+import { about } from '../data/site';
+import Icon from './Icon.astro';
+---
+<section id="about">
+  <div class="wrap about-grid">
+    <div data-reveal>
+      <div class="eyebrow">{about.eyebrow}</div>
+      <h2>{about.heading}</h2>
+      <div class="ask-card">
+        <h3>Ask Derek about…</h3>
+        <ul>
+          {about.askAbout.map((a) => (
+            <li><span class="ask-icon"><Icon name={a.icon} /></span>{a.text}</li>
+          ))}
+        </ul>
+        <p class="ask-footer">{about.askFooter} <a href="#events">Find him at an event</a> or <a href="#involved">get involved</a>.</p>
+      </div>
+    </div>
+    <div>
+      {about.bio.map((p, i) => <p data-reveal style={`--d: ${i * 80}ms`}>{p}</p>)}
+      <blockquote data-reveal>“{about.quote}”</blockquote>
+    </div>
+  </div>
+</section>

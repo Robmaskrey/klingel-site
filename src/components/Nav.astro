@@ -1,0 +1,28 @@
+---
+import Logo from './Logo.astro';
+---
+<header class="nav">
+  <div class="wrap">
+    <Logo />
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false" id="menuBtn">&#9776;</button>
+    <ul id="menu">
+      <li><a href="#about">About</a></li>
+      <li><a href="#priorities">Priorities</a></li>
+      <li><a href="#involved">Get Involved</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#donate" class="btn btn-donate">Donate</a></li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('menuBtn')!;
+  const menu = document.getElementById('menu')!;
+  btn.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(open));
+  });
+  menu.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => menu.classList.remove('open')),
+  );
+</script>

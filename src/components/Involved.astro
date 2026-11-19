@@ -1,0 +1,119 @@
+---
+import { site } from '../data/site';
+import Draft from './Draft.astro';
+
+const donateLink = (amount?: number) =>
+  site.donateUrl ? (amount ? `${site.donateUrl}?amount=${amount}` : site.donateUrl) : '#';
+const formAction = site.volunteerFormAction ?? '#';
+const helpOptions = [
+  ['doors', 'Knocking doors'],
+  ['phones', 'Phone / text banking'],
+  ['sign', 'A yard sign'],
+  ['polls', 'Election Day at the polls'],
+  ['host', 'Hosting a meet & greet'],
+  ['other', 'Something else'],
+];
+---
+<section id="involved">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">Join the Team</div>
+      <h2>Local races are won door by door.</h2>
+      <p>Every conversation counts. Sign up to help, or chip in to get Derek's message out across the township.</p>
+    </div>
+    <div class="involve-grid">
+      <div class="panel" data-reveal>
+        <h3>Volunteer</h3>
+        <form id="volForm" action={formAction} method="POST">
+          <div class="row">
+            <div><label for="fn">First name</label><input id="fn" name="first_name" required autocomplete="given-name" /></div>
+            <div><label for="ln">Last name</label><input id="ln" name="last_name" required autocomplete="family-name" /></div>
+          </div>
+          <div class="row">
+            <div><label for="em">Email</label><input id="em" name="email" type="email" required autocomplete="email" /></div>
+            <div><label for="tel">Phone</label><input id="tel" name="phone" type="tel" autocomplete="tel" /></div>
+          </div>
+          <label for="zip">ZIP code</label>
+          <input id="zip" name="zip" inputmode="numeric" maxlength="5" autocomplete="postal-code" />
+          <label>I can help with…</label>
+          <div class="checks">
+            {helpOptions.map(([value, text]) => (
+              <label class="ballot">
+                <input type="checkbox" name="help" value={value} />
+                <span class="box" aria-hidden="true">
+                  <svg viewBox="0 0 16 16"><path d="M3 8.5 L6.5 12 L13 4" pathLength="1" /></svg>
+                </span>
+                {text}
+              </label>
+            ))}
+          </div>
+          <button class="btn btn-navy" type="submit" id="volSubmit">Count Me In</button>
+          <p class="form-error" id="volError" role="alert" hidden>Something went wrong sending your sign-up. Please try again.</p>
+          <p class="form-note">We'll only use your info to contact you about the campaign.</p>
+        </form>
+        <div class="success" id="volSuccess" tabindex="-1" hidden>
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="28" pathLength="1" />
+            <path d="M19 33 L28 42 L46 22" pathLength="1" />
+          </svg>
+          <h3>You're on the team!</h3>
+          <p>Thanks for signing up. The campaign will reach out soon about how you can help.</p>
+        </div>
+      </div>
+
+      <div class="panel dark" id="donate" data-reveal style="--d: 150ms">
+        <h3>Chip In</h3>
+        <p>Yard signs, mailers, and literature add up fast in a township race. Any amount makes a real difference.</p>
+        <div class="amounts">
+          {site.donateAmounts.map((a) => <a href={donateLink(a)}>${a}</a>)}
+          <a href={donateLink()}>Other</a>
+        </div>
+        <a href={donateLink()} class="btn btn-donate">
+          {site.donateUrl ? 'Donate via ActBlue' : <Fragment>Donate via <Draft>ActBlue</Draft></Fragment>}
+        </a>
+        <div class="vote-box">
+          <h3>Make Your Plan to Vote</h3>
+          <p>Check your registration, find your polling place, or request a mail-in ballot at <a href="https://www.vote.pa.gov" target="_blank" rel="noopener">vote.pa.gov</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Sends the sign-up in the background (Formspree and similar services accept
+  // this), then swaps the form for the "You're on the team!" check.
+  // Until volunteerFormAction is set in site.ts, nothing is sent: it just
+  // shows the success message so the flow can be previewed.
+  const form = document.getElementById('volForm') as HTMLFormElement;
+  const success = document.getElementById('volSuccess')!;
+  const error = document.getElementById('volError')!;
+  const submit = document.getElementById('volSubmit') as HTMLButtonElement;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    error.hidden = true;
+    const action = form.getAttribute('action') ?? '#';
+    if (action !== '#') {
+      submit.disabled = true;
+      submit.textContent = 'Sending…';
+      try {
+        const res = await fetch(action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error(String(res.status));
+      } catch {
+        error.hidden = false;
+        submit.disabled = false;
+        submit.textContent = 'Count Me In';
+        return;
+      }
+    }
+    form.hidden = true;
+    success.hidden = false;
+    requestAnimationFrame(() => success.classList.add('is-shown'));
+    success.focus();
+  });
+</script>

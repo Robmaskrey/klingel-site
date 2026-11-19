@@ -1,0 +1,13 @@
+---
+import { stats } from '../data/site';
+---
+<section class="stats" aria-label="Derek by the numbers">
+  <div class="wrap stats-grid">
+    {stats.map((s, i) => (
+      <div class="stat" data-reveal style={`--d: ${i * 120}ms`}>
+        <span class="stat-num" data-count={s.value}>{s.value}</span>
+        <span class="stat-label">{s.label}</span>
+      </div>
+    ))}
+  </div>
+</section>
